@@ -7,19 +7,19 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, AlertCircle, Moon, Sun, Trash2, ShieldCheck } from "lucide-react";
+import { Loader2, AlertCircle, Moon, Sun, Trash2, ShieldCheck, Link, CheckCircle2 } from "lucide-react";
 
 /**
  * 完整的响应类型（联合类型）
  */
-type TelegramApiResponse = TelegramSuccessResponse | TelegramErrorResponse;
+type TelegramApiResponse<T> = TelegramSuccessResponse<T> | TelegramErrorResponse;
 
 /**
  * 成功时的响应结构
  */
-interface TelegramSuccessResponse {
+interface TelegramSuccessResponse<T> {
   ok: true;
-  result: TelegramBotInfo;
+  result: T;
 }
 
 /**
@@ -48,6 +48,21 @@ interface TelegramBotInfo {
   allows_users_to_create_topics: boolean;
 }
 
+/**
+ * Webhook 的详细状态信息
+ */
+interface WebhookInfo {
+  url: string;
+  has_custom_certificate: boolean;
+  pending_update_count: number;
+  ip_address?: string;
+  last_error_date?: number;
+  last_error_message?: string;
+  last_synchronization_error_date?: number;
+  max_connections?: number;
+  allowed_updates?: string[];
+}
+
 export default function SettingPage() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -56,7 +71,14 @@ export default function SettingPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // 1. 初始化：从本地存储读取已保存的 Token
+  // Webhook 状态
+  const [webhookInfo, setWebhookInfo] = useState<WebhookInfo | null>(null);
+  const [webhookUrl, setWebhookUrl] = useState("");
+  const [isSettingWebhook, setIsSettingWebhook] = useState(false);
+  const [webhookStatus, setWebhookStatus] = useState<{ success: boolean; message: string } | null>(null);
+
+
+  // 初始化：从本地存储读取已保存的 Token
   useEffect(() => {
     setMounted(true);
     const savedToken = localStorage.getItem("tg_bot_token");
@@ -66,7 +88,7 @@ export default function SettingPage() {
     }
   }, []);
 
-  // 2. 核心验证逻辑
+  // 获取信息
   const fetchBotInfo = async () => {
     if (!token.trim()) {
       setError("请输入有效的 Bot Token");
@@ -78,13 +100,24 @@ export default function SettingPage() {
 
     try {
       const response = await fetch(`https://api.telegram.org/bot${token}/getMe`);
-      const data: TelegramApiResponse = await response.json();
+      const data: TelegramApiResponse<TelegramBotInfo> = await response.json();
 
       if (data.ok) {
         setBotInfo(data.result);
         localStorage.setItem("tg_bot_token", token); // 保存成功后的 Token
       } else {
         setError(data.description || "Token 校验失败");
+      }
+
+
+      const webhookInfoResponse = await fetch(`https://api.telegram.org/bot${token}/getWebhookInfo`);
+      const webhookInfoData: TelegramApiResponse<WebhookInfo> = await webhookInfoResponse.json();
+
+      if (webhookInfoData.ok) {
+        setWebhookInfo(webhookInfoData.result);
+        setWebhookUrl(webhookInfoData.result.url);
+      } else {
+        setError(webhookInfoData.description);
       }
     } catch (err) {
       setError("无法连接到 Telegram 服务器，请检查网络环境。");
@@ -93,11 +126,38 @@ export default function SettingPage() {
     }
   };
 
-  // 3. 清除配置
+  // 设置 Webhook 逻辑
+  const handleSetWebhook = async () => {
+    if (!webhookUrl.startsWith("https://")) {
+      setWebhookStatus({ success: false, message: "Webhook URL 必须以 https:// 开头" });
+      return;
+    }
+
+    setIsSettingWebhook(true);
+    setWebhookStatus(null);
+
+    try {
+      const response = await fetch(`https://api.telegram.org/bot${token}/setWebhook?url=${encodeURIComponent(webhookUrl)}`);
+      const data:TelegramApiResponse<undefined> = await response.json();
+
+      if (data.ok) {
+        setWebhookStatus({ success: true, message: "Webhook 设置成功！" });
+      } else {
+        setWebhookStatus({ success: false, message: data.description });
+      }
+    } catch (err) {
+      setWebhookStatus({ success: false, message: "请求失败，请稍后重试" });
+    } finally {
+      setIsSettingWebhook(false);
+    }
+  };
+
+  // 清除配置
   const handleReset = () => {
     setToken("");
     setBotInfo(null);
     localStorage.removeItem("tg_bot_token");
+    setWebhookStatus(null)
   };
 
   if (!mounted) return null;
@@ -212,10 +272,52 @@ export default function SettingPage() {
                   ))}
                 </div>
               </div>
+
+
             </div>
           )}
         </CardContent>
 
+        <CardContent className="space-y-6">
+          {botInfo && (
+            <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
+              <div className="p-4 rounded-xl border bg-secondary/20 space-y-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Link className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-bold uppercase tracking-wider text-primary">Webhook 配置</span>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="webhook" className="text-xs">推送目标 URL (HTTPS)</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      id="webhook"
+                      placeholder="https://your-api.com/webhook"
+                      className="text-sm"
+                      value={webhookUrl}
+                      onChange={(e) => setWebhookUrl(e.target.value)}
+                    />
+                    <Button
+                      variant="secondary"
+                      onClick={handleSetWebhook}
+                      disabled={isSettingWebhook || !webhookUrl}
+                    >
+                      {isSettingWebhook ? <Loader2 className="h-4 w-4 animate-spin" /> : "更新"}
+                    </Button>
+                  </div>
+                </div>
+
+                {webhookStatus && (
+                  <div className={`flex items-center gap-2 text-xs p-2 rounded border ${webhookStatus.success ? "bg-green-500/10 border-green-500/20 text-green-600" : "bg-destructive/10 border-destructive/20 text-destructive"
+                    }`}>
+                    {webhookStatus.success ? <CheckCircle2 className="h-3 w-3" /> : <AlertCircle className="h-3 w-3" />}
+                    {webhookStatus.message}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </CardContent>
         <CardFooter className="bg-slate-50/50 dark:bg-white/5 rounded-b-xl border-t py-4 text-[11px] text-muted-foreground flex justify-between">
           <span>当前状态: {botInfo ? "已连接" : "未配置"}</span>
           <span className="hover:text-primary transition-colors cursor-help">如何获取 Token?</span>
