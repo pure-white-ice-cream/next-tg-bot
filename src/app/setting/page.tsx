@@ -2,34 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
+import { Loader2, AlertCircle, Moon, Sun, Trash2, ShieldCheck, Link, CheckCircle2 } from "lucide-react";
+
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, AlertCircle, Moon, Sun, Trash2, ShieldCheck, Link, CheckCircle2 } from "lucide-react";
-
-/**
- * 完整的响应类型（联合类型）
- */
-type TelegramApiResponse<T> = TelegramSuccessResponse<T> | TelegramErrorResponse;
-
-/**
- * 成功时的响应结构
- */
-interface TelegramSuccessResponse<T> {
-  ok: true;
-  result: T;
-}
-
-/**
- * 失败时的响应结构
- */
-interface TelegramErrorResponse {
-  ok: false;
-  error_code: number;
-  description: string;
-}
+import type { TelegramApiResponse } from "@/types/TelegramApiResponse"
 
 /**
  * Telegram 机器人信息的详细字段
@@ -138,7 +118,7 @@ export default function SettingPage() {
 
     try {
       const response = await fetch(`https://api.telegram.org/bot${token}/setWebhook?url=${encodeURIComponent(webhookUrl)}`);
-      const data:TelegramApiResponse<undefined> = await response.json();
+      const data: TelegramApiResponse<undefined> = await response.json();
 
       if (data.ok) {
         setWebhookStatus({ success: true, message: "Webhook 设置成功！" });
@@ -242,9 +222,7 @@ export default function SettingPage() {
 
               {/* 详细功能开关列表 */}
               <div className="space-y-3 pt-2">
-                <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider border-l-2 border-primary/30 pl-2">
-                  功能权限与配置
-                </p>
+                <Label>功能权限与配置</Label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[13px]">
                   {/* 我们可以写一个辅助小组件或映射来渲染这些布尔值 */}
                   {[
@@ -273,38 +251,24 @@ export default function SettingPage() {
                 </div>
               </div>
 
-
-            </div>
-          )}
-        </CardContent>
-
-        <CardContent className="space-y-6">
-          {botInfo && (
-            <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
-              <div className="p-4 rounded-xl border bg-secondary/20 space-y-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <Link className="h-4 w-4 text-primary" />
-                  <span className="text-sm font-bold uppercase tracking-wider text-primary">Webhook 配置</span>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="webhook" className="text-xs">推送目标 URL (HTTPS)</Label>
-                  <div className="flex gap-2">
-                    <Input
-                      id="webhook"
-                      placeholder="https://your-api.com/webhook"
-                      className="text-sm"
-                      value={webhookUrl}
-                      onChange={(e) => setWebhookUrl(e.target.value)}
-                    />
-                    <Button
-                      variant="secondary"
-                      onClick={handleSetWebhook}
-                      disabled={isSettingWebhook || !webhookUrl}
-                    >
-                      {isSettingWebhook ? <Loader2 className="h-4 w-4 animate-spin" /> : "更新"}
-                    </Button>
-                  </div>
+              {/* Webhook 设置 */}
+              <div className="space-y-3 pt-2">
+                <Label>Webhook 配置</Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="webhook"
+                    placeholder="https://your-api.com/webhook"
+                    className="text-sm"
+                    value={webhookUrl}
+                    onChange={(e) => setWebhookUrl(e.target.value)}
+                  />
+                  <Button
+                    variant="outline"
+                    onClick={handleSetWebhook}
+                    disabled={isSettingWebhook || !webhookUrl}
+                  >
+                    {isSettingWebhook ? <Loader2 className="h-4 w-4 animate-spin" /> : "更新"}
+                  </Button>
                 </div>
 
                 {webhookStatus && (
@@ -318,6 +282,7 @@ export default function SettingPage() {
             </div>
           )}
         </CardContent>
+
         <CardFooter className="bg-slate-50/50 dark:bg-white/5 rounded-b-xl border-t py-4 text-[11px] text-muted-foreground flex justify-between">
           <span>当前状态: {botInfo ? "已连接" : "未配置"}</span>
           <span className="hover:text-primary transition-colors cursor-help">如何获取 Token?</span>
