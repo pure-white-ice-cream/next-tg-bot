@@ -11,16 +11,13 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import type { TelegramApiResponse } from "@/types/TelegramApiResponse"
+import type { TelegramApiResponse } from "@/types/TelegramApiResponse";
+import type { BotCommand, WebhookInfo, User as TelegramUser } from "@/types/telegram";
 
 /**
  * Telegram 机器人信息的详细字段
  */
-interface TelegramBotInfo {
-  id: number;
-  is_bot: boolean;
-  first_name: string;
-  username: string;
+interface TelegramBotInfo extends TelegramUser {
   can_join_groups: boolean;
   can_read_all_group_messages: boolean;
   supports_inline_queries: boolean;
@@ -28,29 +25,6 @@ interface TelegramBotInfo {
   has_main_web_app: boolean;
   has_topics_enabled: boolean;
   allows_users_to_create_topics: boolean;
-}
-
-/**
- * Webhook 的详细状态信息
- */
-interface WebhookInfo {
-  url: string;
-  has_custom_certificate: boolean;
-  pending_update_count: number;
-  ip_address?: string;
-  last_error_date?: number;
-  last_error_message?: string;
-  last_synchronization_error_date?: number;
-  max_connections?: number;
-  allowed_updates?: string[];
-}
-
-/**
- * Bot 指令定义
- */
-interface BotCommand {
-  command: string;
-  description: string;
 }
 
 export default function SettingPage() {
