@@ -1,14 +1,14 @@
-import { TelegramUpdate, BotCommand } from "@/types/telegram";
+import { TelegramUpdate, CommandHandler } from "@/types/telegram";
 import { NextResponse } from "next/server";
 
 class CommandDispatcher {
-    private commands: Map<string, BotCommand>;
+    private commands: Map<string, CommandHandler>;
 
     constructor() {
-        this.commands = new Map<string, BotCommand>();
+        this.commands = new Map<string, CommandHandler>();
     }
 
-    registerCommand(command: BotCommand) {
+    registerCommand(command: CommandHandler) {
         this.commands.set(command.name.toLowerCase(), command);
     }
 
@@ -46,7 +46,7 @@ class CommandDispatcher {
         return null;
     }
 
-    getRegisteredCommands(): BotCommand[] {
+    getRegisteredCommands(): CommandHandler[] {
         return Array.from(this.commands.values());
     }
 }

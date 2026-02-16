@@ -1,6 +1,6 @@
-import { TelegramUpdate, BotCommand } from "@/types/telegram";
+import { TelegramUpdate, CommandHandler } from "@/types/telegram";
 
-const infoCommand: BotCommand = {
+const infoCommand: CommandHandler = {
     name: "info",
     description: "获取机器人和聊天信息",
     execute: async (update: TelegramUpdate) => {

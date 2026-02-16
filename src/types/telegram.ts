@@ -63,10 +63,33 @@ export interface CallbackQuery {
 }
 
 /**
- * 定义 BotCommand 接口，用于统一指令处理器的结构
+ * Webhook 的详细状态信息
+ */
+export interface WebhookInfo {
+    url: string;
+    has_custom_certificate: boolean;
+    pending_update_count: number;
+    ip_address?: string;
+    last_error_date?: number;
+    last_error_message?: string;
+    last_synchronization_error_date?: number;
+    max_connections?: number;
+    allowed_updates?: string[];
+}
+
+/**
+ * 定义 BotCommand 接口，用于 Telegram API 交互
  */
 export interface BotCommand {
-    name: string; // 指令名称，例如 'start', 'info'
+    command: string; // 指令名称，例如 'start', 'info'
     description: string; // 指令描述
+}
+
+/**
+ * 定义指令处理器接口，用于代码逻辑拆分
+ */
+export interface CommandHandler {
+    name: string;
+    description: string;
     execute: (update: TelegramUpdate, args?: string[]) => Promise<any>;
 }
