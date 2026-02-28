@@ -2,9 +2,11 @@ import { NextResponse } from 'next/server';
 import { TelegramUpdate } from '@/types/telegram';
 import { commandDispatcher } from '@/lib/command-dispatcher';
 import infoCommand from '@/commands/info';
+import originalCommand from '@/commands/original';
 
 // 注册所有指令
 commandDispatcher.registerCommand(infoCommand);
+commandDispatcher.registerCommand(originalCommand);
 
 export async function POST(request: Request) {
     try {
