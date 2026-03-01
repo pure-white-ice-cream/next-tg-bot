@@ -268,7 +268,6 @@ export default function SettingPage() {
                   handleSetWebhook={handleSetWebhook}
                   isSettingWebhook={isSettingWebhook}
                   webhookStatus={webhookStatus}
-                  onToggleInlineMode={handleToggleInlineMode}
                 />
               </TabsContent>
               

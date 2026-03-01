@@ -24,7 +24,6 @@ interface BotInfoCardProps {
   handleSetWebhook: () => void;
   isSettingWebhook: boolean;
   webhookStatus: { success: boolean; message: string } | null;
-  onToggleInlineMode: (enabled: boolean) => void;
 }
 
 export function BotInfoCard({
@@ -34,7 +33,6 @@ export function BotInfoCard({
   handleSetWebhook,
   isSettingWebhook,
   webhookStatus,
-  onToggleInlineMode,
 }: BotInfoCardProps) {
   return (
     <div className="rounded-xl border border-primary/20 bg-primary/5 p-5 space-y-6 animate-in zoom-in-95 duration-300">
@@ -79,14 +77,7 @@ export function BotInfoCard({
           ].map((item, idx) => (
             <div key={idx} className="flex items-center justify-between p-2 rounded-md bg-background/50 border border-border/40">
               <span className="text-muted-foreground">{item.label}</span>
-              {item.isSwitch ? (
-                <Switch 
-                  checked={item.value} 
-                  onCheckedChange={(checked) => {
-                    if (item.key === 'inline') onToggleInlineMode(checked);
-                  }}
-                />
-              ) : item.value ? (
+              {item.value ? (
                 <span className="text-[10px] bg-green-500/10 text-green-600 dark:text-green-400 px-1.5 py-0.5 rounded font-medium border border-green-500/20">
                   开启
                 </span>
