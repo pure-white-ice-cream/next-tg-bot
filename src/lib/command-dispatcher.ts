@@ -26,10 +26,16 @@ class CommandDispatcher {
         );
 
         if (botCommandEntity) {
-            const commandText = text.substring(
+            let commandText = text.substring(
                 botCommandEntity.offset + 1, // +1 to skip the '/' character
                 botCommandEntity.offset + botCommandEntity.length
             );
+
+            // 如果命令包含 @，说明是针对特定机器人的命令，如 /original@bot_username
+            // 我们只需要前面的命令部分
+            if (commandText.includes('@')) {
+                commandText = commandText.split('@')[0];
+            }
             const args = text.substring(botCommandEntity.offset + botCommandEntity.length).trim().split(/\s+/).filter(s => s.length > 0);
 
             const command = this.commands.get(commandText.toLowerCase());
