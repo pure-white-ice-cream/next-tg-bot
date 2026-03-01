@@ -3,10 +3,12 @@ import { TelegramUpdate } from '@/types/telegram';
 import { commandDispatcher } from '@/lib/command-dispatcher';
 import infoCommand from '@/commands/info';
 import originalCommand from '@/commands/original';
+import pmCommand from '@/commands/pm';
 
 // 注册所有指令
 commandDispatcher.registerCommand(infoCommand);
 commandDispatcher.registerCommand(originalCommand);
+commandDispatcher.registerCommand(pmCommand);
 
 export async function POST(request: Request) {
     try {
