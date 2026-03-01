@@ -27,6 +27,7 @@ export interface Message {
     chat: Chat;
     text?: string;
     entities?: MessageEntity[];
+    reply_to_message?: Message;
     // 可以根据需要添加更多字段，例如 photo, audio, document, video, sticker, etc.
 }
 
