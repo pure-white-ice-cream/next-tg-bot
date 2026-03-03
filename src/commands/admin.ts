@@ -67,7 +67,7 @@ const adminCommand: CommandHandler = {
 		}
 
 		// 从 process.env.test.BOT_TOKEN 获取环境变量
-		const token = (process.env as { test?: { BOT_TOKEN?: string } }).test?.BOT_TOKEN;
+		const token = process.env.BOT_TOKEN;
 
 		if (!token) {
 			return {
