@@ -22,8 +22,7 @@ const settingCommand: CommandHandler = {
             return null;
         }
 
-        // 如果是私聊，通常认为发起者就是“管理员”（或者可以根据需求增加白名单校验）
-        // 但为了演示一致性，我们这里主要处理群组逻辑，私聊直接允许
+        // 如果是私聊，通常认为发起者就是“管理员”
         let isAdmin = chatType === "private";
 
         if (chatType === "group" || chatType === "supergroup") {
@@ -75,25 +74,24 @@ const settingCommand: CommandHandler = {
             };
         }
 
-        // 管理员校验通过，弹出设置界面（使用 Inline Keyboard 配合 Web App）
-        // 注意：这里的 url 需要是部署后的实际地址，或者是用户可以访问的地址
-        // 作为一个样例，我们假设设置页面在 /setting
-        const webAppUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://your-domain.com'}/setting/example`;
-
+        // 管理员校验通过，直接在回复中展示简单的内联按钮设置界面样例
         return {
             method: "sendMessage",
             chat_id: chatId,
-            text: "⚙️ <b>控制面板</b>\n\n点击下方按钮进入设置界面。这是一个示例界面，用于演示管理员权限校验及 Web App 集成。",
+            text: "⚙️ <b>机器人设置 (示例)</b>\n\n这是一个纯内联按钮形式的设置界面样例，不做任何实际功能实现，仅供测试。",
             parse_mode: "HTML",
             reply_markup: {
                 inline_keyboard: [
                     [
-                        {
-                            text: "打开设置界面",
-                            web_app: {
-                                url: webAppUrl
-                            }
-                        }
+                        { text: "🔔 通知: 开启", callback_data: "toggle_notify" },
+                        { text: "🛡️ 安全: 增强", callback_data: "toggle_security" }
+                    ],
+                    [
+                        { text: "🌐 语言: 简体中文", callback_data: "change_lang" }
+                    ],
+                    [
+                        { text: "✅ 保存设置", callback_data: "save_settings" },
+                        { text: "❌ 取消", callback_data: "cancel_settings" }
                     ]
                 ]
             }
