@@ -5,12 +5,14 @@ import infoCommand from '@/commands/info';
 import originalCommand from '@/commands/original';
 import pmCommand from '@/commands/pm';
 import adminCommand from '@/commands/admin';
+import settingCommand from '@/commands/setting';
 
 // 注册所有指令
 commandDispatcher.registerCommand(infoCommand);
 commandDispatcher.registerCommand(originalCommand);
 commandDispatcher.registerCommand(pmCommand);
 commandDispatcher.registerCommand(adminCommand);
+commandDispatcher.registerCommand(settingCommand);
 
 export async function POST(request: Request) {
     try {
