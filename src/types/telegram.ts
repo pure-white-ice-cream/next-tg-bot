@@ -50,7 +50,17 @@ export interface TelegramUpdate {
     channel_post?: Message;
     edited_channel_post?: Message;
     callback_query?: CallbackQuery;
-    // 可以根据需要添加更多类型的更新，例如 inline_query, chosen_inline_result, shipping_query, pre_checkout_query, poll, poll_answer, my_chat_member, chat_member, chat_join_request, etc.
+    inline_query?: InlineQuery;
+    chosen_inline_result?: ChosenInlineResult;
+    // 可以根据需要添加更多类型的更新，例如 shipping_query, pre_checkout_query, poll, poll_answer, my_chat_member, chat_member, chat_join_request, etc.
+}
+
+export interface ChosenInlineResult {
+    result_id: string;
+    from: User;
+    location?: { latitude: number; longitude: number };
+    inline_message_id?: string;
+    query: string;
 }
 
 export interface CallbackQuery {
@@ -61,6 +71,58 @@ export interface CallbackQuery {
     chat_instance: string;
     data?: string;
     game_short_name?: string;
+}
+
+/**
+ * 内联查询相关接口
+ */
+export interface InlineQuery {
+    id: string;
+    from: User;
+    query: string;
+    offset?: string;
+    chat_type?: 'sender' | 'private' | 'group' | 'supergroup' | 'channel';
+}
+
+export interface InlineQueryResult {
+    type: string;
+    id: string;
+    [key: string]: any;
+}
+
+export interface InlineQueryResultArticle extends InlineQueryResult {
+    type: 'article';
+    title: string;
+    input_message_content: InputMessageContent;
+    reply_markup?: InlineKeyboardMarkup;
+    url?: string;
+    hide_url?: boolean;
+    description?: string;
+    thumb_url?: string;
+    thumb_width?: number;
+    thumb_height?: number;
+}
+
+export interface InputMessageContent {
+    message_text: string;
+    parse_mode?: 'HTML' | 'Markdown' | 'MarkdownV2';
+    entities?: MessageEntity[];
+    disable_web_page_preview?: boolean;
+}
+
+export interface InlineKeyboardMarkup {
+    inline_keyboard: InlineKeyboardButton[][];
+}
+
+export interface InlineKeyboardButton {
+    text: string;
+    url?: string;
+    callback_data?: string;
+    web_app?: { url: string };
+    switch_inline_query?: string;
+    switch_inline_query_current_chat?: string;
+    callback_game?: any;
+    pay?: boolean;
 }
 
 /**
@@ -93,4 +155,12 @@ export interface CommandHandler {
     name: string;
     description: string;
     execute: (update: TelegramUpdate, args?: string[]) => Promise<any>;
+}
+
+/**
+ * 定义内联查询处理器接口
+ */
+export interface InlineQueryHandler {
+    name: string;
+    execute: (query: InlineQuery) => Promise<InlineQueryResult[]>;
 }

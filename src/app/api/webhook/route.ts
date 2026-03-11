@@ -1,11 +1,13 @@
 import { NextResponse } from 'next/server';
 import { TelegramUpdate } from '@/types/telegram';
 import { commandDispatcher } from '@/lib/command-dispatcher';
+import { inlineQueryDispatcher } from '@/lib/inline-query-dispatcher';
 import infoCommand from '@/commands/info';
 import originalCommand from '@/commands/original';
 import pmCommand from '@/commands/pm';
 import adminCommand from '@/commands/admin';
 import settingCommand from '@/commands/setting';
+import pmInlineHandler from '@/commands/pm-inline';
 
 // 注册所有指令
 commandDispatcher.registerCommand(infoCommand);
@@ -14,9 +16,20 @@ commandDispatcher.registerCommand(pmCommand);
 commandDispatcher.registerCommand(adminCommand);
 commandDispatcher.registerCommand(settingCommand);
 
+// 注册所有内联查询处理器
+inlineQueryDispatcher.registerHandler(pmInlineHandler);
+
 export async function POST(request: Request) {
     try {
         const body: TelegramUpdate = await request.json();
+
+        // 处理内联查询
+        if (body.inline_query) {
+            const inlineResponse = await inlineQueryDispatcher.dispatch(body.inline_query);
+            if (inlineResponse) {
+                return inlineResponse;
+            }
+        }
 
         // 使用指令分发器处理更新
         const response = await commandDispatcher.dispatch(body);
