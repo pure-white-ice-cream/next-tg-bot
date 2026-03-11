@@ -23,6 +23,30 @@ const PaimonQuotes = [
     {"zh": "旅行者，派蒙会一直陪着你的！", "ja": "旅人、パイモンはずっと一緒にいるよ！", "en": "Traveler, Paimon will always be with you!"}
 ];
 
+// 为每条语录提供详细的说明文字
+const QuoteDescriptions = [
+    {"zh": "派蒙的经典台词 - 探索的邀请", "ja": "パイモンの名台詞 - 探検への招待", "en": "Paimon's classic quote - An invitation to explore"},
+    {"zh": "派蒙的困惑 - 对\"欸嘿\"的疑惑", "ja": "パイモンの困惑 - \"えへっ\"の意味について", "en": "Paimon's confusion - About the meaning of 'ehe~'"},
+    {"zh": "派蒙的威胁 - 给惹她生气的人取绰号", "ja": "パイモンの脅し - 怒らせた人へのあだ名", "en": "Paimon's threat - Nicknames for those who anger her"},
+    {"zh": "派蒙的抗议 - 对被戏弄的不满", "ja": "パイモンの抗議 - からかわれることへの不満", "en": "Paimon's protest - Dissatisfaction with being teased"},
+    {"zh": "派蒙的宣言 - 坚决否认是食物", "ja": "パイモンの宣言 - 食べ物ではないことの主張", "en": "Paimon's declaration - Firmly denying being food"},
+    {"zh": "派蒙的拒绝 - 对被吃掉的强烈反对", "ja": "パイモンの拒否 - 食べられることへの強い反対", "en": "Paimon's refusal - Strong opposition to being eaten"},
+    {"zh": "派蒙的期待 - 对宝藏的渴望", "ja": "パイモンの期待 - 宝物への憧れ", "en": "Paimon's anticipation - Longing for treasure"},
+    {"zh": "派蒙的坚持 - 再次强调不是食物", "ja": "パイモンの主張 - 再度の食べ物否定", "en": "Paimon's insistence - Reaffirming she's not food"},
+    {"zh": "派蒙的指责 - 对旅行者挥霍摩拉的吐槽", "ja": "パイモンの指摘 - 旅人のモラ浪費への突っ込み", "en": "Paimon's accusation - Complaining about Traveler's spending"},
+    {"zh": "派蒙的乐观 - 对冒险充满期待", "ja": "パイモンの楽観 - 冒険への期待に満ちた言葉", "en": "Paimon's optimism - Full of anticipation for adventure"},
+    {"zh": "派蒙的感叹 - 对美景的赞美", "ja": "パイモンの感動 - 美しい景色への感嘆", "en": "Paimon's admiration - Praise for beautiful scenery"},
+    {"zh": "派蒙的疑虑 - 对旅行者的怀疑", "ja": "パイモンの疑い - 旅人への不信感", "en": "Paimon's suspicion - Doubting the Traveler"},
+    {"zh": "派蒙的自豪 - 对自己能力的肯定", "ja": "パイモンの自信 - 自分の能力への確信", "en": "Paimon's pride - Confidence in her abilities"},
+    {"zh": "派蒙的建议 - 推荐美食甜甜花酿鸡", "ja": "パイモンの提案 - スイートフラワーのチキンをお勧め", "en": "Paimon's suggestion - Recommending Sweet Madame"},
+    {"zh": "派蒙的疲惫 - 需要休息的时刻", "ja": "パイモンの疲労 - 休憩が必要な時", "en": "Paimon's exhaustion - Time for a break"},
+    {"zh": "派蒙的辩解 - 否认自己是贪吃鬼", "ja": "パイモンの言い訳 - 食いしん坊ではないと主張", "en": "Paimon's excuse - Denying she's a glutton"},
+    {"zh": "派蒙的美食推荐 - 对璃月美食的期待", "ja": "パイモンのグルメ情報 - 璃月の料理への期待", "en": "Paimon's food recommendation - Excitement for Liyue cuisine"},
+    {"zh": "派蒙的得意 - 对自己的夸耀", "ja": "パイモンの自慢 - 自分の素晴らしさの自慢", "en": "Paimon's boasting - Showing off her greatness"},
+    {"zh": "派蒙的评价 - 给冒险打满分", "ja": "パイモンの評価 - 冒険に満点をつける", "en": "Paimon's rating - Giving the adventure a perfect score"},
+    {"zh": "派蒙的承诺 - 永远陪伴旅行者", "ja": "パイモンの約束 - 旅人への永遠の付き添い", "en": "Paimon's promise - Always staying with the Traveler"}
+];
+
 /**
  * 将派蒙语录转换为内联查询结果
  */
@@ -31,7 +55,7 @@ function quotesToInlineResults(quotes: typeof PaimonQuotes, lang: "zh" | "ja" | 
         type: "article",
         id: `pm_${index}_${lang}`,
         title: quote[lang],
-        description: `派蒙语录 #${index + 1}`,
+        description: QuoteDescriptions[index][lang],
         input_message_content: {
             message_text: quote[lang],
         },
