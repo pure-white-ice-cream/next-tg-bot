@@ -8,6 +8,7 @@ import pmCommand from '@/commands/pm';
 import adminCommand from '@/commands/admin';
 import settingCommand from '@/commands/setting';
 import pmInlineHandler from '@/commands/pm-inline';
+import helpInlineHandler from '@/commands/help-inline';
 
 // 注册所有指令
 commandDispatcher.registerCommand(infoCommand);
@@ -18,6 +19,7 @@ commandDispatcher.registerCommand(settingCommand);
 
 // 注册所有内联查询处理器
 inlineQueryDispatcher.registerHandler(pmInlineHandler);
+inlineQueryDispatcher.registerHandler(helpInlineHandler);
 
 export async function POST(request: Request) {
     try {

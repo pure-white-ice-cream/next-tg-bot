@@ -19,13 +19,16 @@ class InlineQueryDispatcher {
      * 分发内联查询
      */
     async dispatch(inlineQuery: InlineQuery): Promise<NextResponse | null> {
+        let handlerName = "";
+        
         if (!inlineQuery.query) {
-            return null;
+            // 如果查询为空，默认使用 help 处理器
+            handlerName = "help";
+        } else {
+            // 获取查询的第一个单词作为处理器名称
+            const queryParts = inlineQuery.query.trim().split(/\s+/);
+            handlerName = queryParts[0].toLowerCase();
         }
-
-        // 获取查询的第一个单词作为处理器名称
-        const queryParts = inlineQuery.query.trim().split(/\s+/);
-        const handlerName = queryParts[0].toLowerCase();
 
         const handler = this.handlers.get(handlerName);
         if (!handler) {
