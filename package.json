@@ -1,6 +1,31 @@
 {
 	"name": "next-tg-bot",
 	"description": "Build a full-stack web application with Next.js.",
+	"scripts": {
+		"// build": "编译 Next.js 应用，生成用于生产环境的优化产物",
+		"build": "next build",
+
+		"// cf-typegen": "为 Cloudflare 环境变量生成 TypeScript 类型定义",
+		"cf-typegen": "wrangler types --env-interface CloudflareEnv env.d.ts",
+
+		"// check": "综合检查: 先尝试构建应用，再运行 TypeScript 编译器 (tsc)",
+		"check": "npm run build && tsc",
+
+		"// deploy": "部署到 Cloudflare: 转换为兼容格式并直接发布上线",
+		"deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+
+		"// dev": "启动本地开发服务器，支持热更新",
+		"dev": "next dev",
+
+		"// lint": "运行 ESLint 静态检查，修复代码质量或格式问题",
+		"lint": "next lint",
+
+		"// preview": "本地预览: 在模拟 Cloudflare 环境中构建并预览",
+		"preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+
+		"// start": "在本地启动生产模式服务（仅用于非 Workers 环境测试）",
+		"start": "next start"
+	},
 	"cloudflare": {
 		"label": "Next.js Framework Starter",
 		"products": [
@@ -37,15 +62,5 @@
 		"typescript": "^5.9.3",
 		"wrangler": "^4.56.0"
 	},
-	"private": true,
-	"scripts": {
-		"build": "next build",
-		"cf-typegen": "wrangler types --env-interface CloudflareEnv env.d.ts",
-		"check": "npm run build && tsc",
-		"deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
-		"dev": "next dev",
-		"lint": "next lint",
-		"preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-		"start": "next start"
-	}
+	"private": true
 }
