@@ -25,7 +25,7 @@ const submissionCommand: CommandHandler = {
             return {
                 method: "sendMessage",
                 chat_id: chatId,
-                text: `❌ 该群组未配置到环境变量 SOURCE_GROUP_ID 中，无法使用投稿指令。\n[${process.env.SOURCE_GROUP_ID} != ${process.env.TARGET_CHANNEL_ID}]`,
+                text: `❌ 该群组未配置到环境变量 SOURCE_GROUP_ID 中，无法使用投稿指令。\n[${sourceGroupId} && ${chatId.toString()} !== ${sourceGroupId}]`,
                 reply_to_message_id: message.message_id
             };
         }
