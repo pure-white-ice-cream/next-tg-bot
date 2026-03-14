@@ -22,7 +22,12 @@ const submissionCommand: CommandHandler = {
 
         // 1. 验证来源群组
         if (sourceGroupId && chatId.toString() !== sourceGroupId) {
-            return null;
+            return {
+                method: "sendMessage",
+                chat_id: chatId,
+                text: `❌ 该群组未配置到环境变量 SOURCE_GROUP_ID 中，无法使用投稿指令。\n[${process.env.SOURCE_GROUP_ID} != ${process.env.TARGET_CHANNEL_ID}]`,
+                reply_to_message_id: message.message_id
+            };
         }
 
         // 2. 验证管理员权限
@@ -47,7 +52,7 @@ const submissionCommand: CommandHandler = {
         try {
             const memberResponse = await fetch(`https://api.telegram.org/bot${botToken}/getChatMember?chat_id=${chatId}&user_id=${fromId}`);
             const memberData = (await memberResponse.json()) as ChatMemberResponse;
-            
+
             if (!memberData.ok || !memberData.result || !['administrator', 'creator'].includes(memberData.result.status)) {
                 return {
                     method: "sendMessage",
