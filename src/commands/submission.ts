@@ -74,8 +74,22 @@ const submissionCommand: CommandHandler = {
         // 3. 处理转发逻辑
         const repliedMsg = message.reply_to_message;
         const submitter = repliedMsg.from;
-        const submitterName = submitter ? (submitter.username ? `@${submitter.username}` : `${submitter.first_name} ${submitter.last_name || ""}`.trim()) : "未知";
-        const creditText = `\n\n👤 投稿人: ${submitterName}`;
+
+        let submitterName = "未知";
+        if (submitter) {
+            const firstName = submitter.first_name;
+            const lastName = submitter.last_name || "";
+            submitterName = `${firstName} ${lastName}`.trim();
+        }
+
+        // 在 execute 函数内部或外部定义
+        const getMessageLink = (chatId: number, messageId: number) => {
+            // 将 -1003628430456 转换为 3628430456
+            const cleanChatId = chatId.toString().replace("-100", "");
+            return `https://t.me/c/${cleanChatId}/${messageId}`;
+        };
+
+        const creditText = `\n\nvia <a href="${getMessageLink(chatId, repliedMsg.message_id)}">${submitterName}</a>`;
 
         if (!targetChannelId) {
             return {
