@@ -7,6 +7,7 @@ import originalCommand from '@/commands/original';
 import pmCommand from '@/commands/pm';
 import adminCommand from '@/commands/admin';
 import settingCommand from '@/commands/setting';
+import submissionCommand from '@/commands/submission';
 import pmInlineHandler from '@/commands/pm-inline';
 import helpInlineHandler from '@/commands/help-inline';
 
@@ -16,6 +17,7 @@ commandDispatcher.registerCommand(originalCommand);
 commandDispatcher.registerCommand(pmCommand);
 commandDispatcher.registerCommand(adminCommand);
 commandDispatcher.registerCommand(settingCommand);
+commandDispatcher.registerCommand(submissionCommand);
 
 // 注册所有内联查询处理器
 inlineQueryDispatcher.registerHandler(pmInlineHandler);

@@ -28,7 +28,30 @@ export interface Message {
     text?: string;
     entities?: MessageEntity[];
     reply_to_message?: Message;
-    // 可以根据需要添加更多字段，例如 photo, audio, document, video, sticker, etc.
+    photo?: PhotoSize[];
+    video?: Video;
+    caption?: string;
+    caption_entities?: MessageEntity[];
+}
+
+export interface PhotoSize {
+    file_id: string;
+    file_unique_id: string;
+    width: number;
+    height: number;
+    file_size?: number;
+}
+
+export interface Video {
+    file_id: string;
+    file_unique_id: string;
+    width: number;
+    height: number;
+    duration: number;
+    thumb?: PhotoSize;
+    file_name?: string;
+    mime_type?: string;
+    file_size?: number;
 }
 
 export interface MessageEntity {
