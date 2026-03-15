@@ -1,4 +1,5 @@
 import { TelegramUpdate, CommandHandler } from "@/types/telegram";
+import { commandDispatcher } from "@/lib/command-dispatcher";
 
 const TELEGRAM_API_BASE = "https://api.telegram.org/bot";
 
@@ -88,6 +89,9 @@ const settingCommand: CommandHandler = {
                     ],
                     [
                         { text: "🌐 语言: 简体中文", callback_data: "change_lang" }
+                    ],
+                    [
+                        { text: "🔄 刷新指令描述", callback_data: "refresh_commands" }
                     ],
                     [
                         { text: "✅ 保存设置", callback_data: "save_settings" },

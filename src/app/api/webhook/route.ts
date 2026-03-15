@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { TelegramUpdate } from '@/types/telegram';
 import { commandDispatcher } from '@/lib/command-dispatcher';
 import { inlineQueryDispatcher } from '@/lib/inline-query-dispatcher';
+import { handleCallbackQuery } from '@/lib/callback-handler';
 import infoCommand from '@/commands/info';
 import originalCommand from '@/commands/original';
 import pmCommand from '@/commands/pm';
@@ -26,6 +27,14 @@ inlineQueryDispatcher.registerHandler(helpInlineHandler);
 export async function POST(request: Request) {
     try {
         const body: TelegramUpdate = await request.json();
+
+        // 处理回调查询（callback_query）
+        if (body.callback_query) {
+            const callbackResponse = await handleCallbackQuery(body);
+            if (callbackResponse) {
+                return callbackResponse;
+            }
+        }
 
         // 处理内联查询
         if (body.inline_query) {
